@@ -12,7 +12,7 @@ struct FeaturesFetcher {
 
     func fetch() async -> [RoadmapFeature] {
         do {
-            return try await JSONDataFetcher.loadJSON(url: featureJSONURL)
+            return try await JSONDataFetcher.get(url: featureJSONURL)
         } catch {
             print("error:", error.localizedDescription)
             return []

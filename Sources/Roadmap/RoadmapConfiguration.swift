@@ -34,13 +34,10 @@ public struct RoadmapConfiguration {
     ///   See `https://countapi.xyz/` for more information.
     ///   Defaults to your main bundle identifier.
     ///   - style: Pick a `RoadmapStyle` that fits your app best. By default the `.standard` option is used.
-    public init(roadmapJSONURL: URL, namespace: String? = nil, style: RoadmapStyle = RoadmapTemplate.standard.style, shuffledOrder: Bool = false, allowVotes: Bool = true, allowSearching: Bool = false) {
-        guard let namespace = namespace ?? Bundle.main.bundleIdentifier else {
-            fatalError("Missing namespace")
-        }
+    public init(roadmapJSONURL: URL, counterUrl: URL, style: RoadmapStyle = RoadmapTemplate.standard.style, shuffledOrder: Bool = false, allowVotes: Bool = true, allowSearching: Bool = false) {
 
         self.roadmapJSONURL = roadmapJSONURL
-        self.voter = FeatureVoterCountAPI(namespace: namespace)
+        self.voter = FeatureVoterCountAPI(baseUrl: counterUrl)
         self.style = style
         self.shuffledOrder = shuffledOrder
         self.allowVotes = allowVotes
@@ -65,6 +62,9 @@ public struct RoadmapConfiguration {
 
 extension RoadmapConfiguration {
     static func sample() -> RoadmapConfiguration {
-        .init(roadmapJSONURL: URL(string: "https://simplejsoncms.com/api/vq2juq1xhg")!, namespace: "roadmaptest")
+        .init(
+            roadmapJSONURL: URL(string: "https://simplejsoncms.com/api/vq2juq1xhg")!,
+            counterUrl: URL(string: "https://simplejsoncms.com/api/vq2juq1xhg")!
+        )
     }
 }

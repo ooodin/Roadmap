@@ -9,4 +9,8 @@ import Foundation
 
 struct RoadmapFeatureVotingCount: Codable {
     let value: Int?
+    
+    enum CodingKeys: String, CodingKey {
+        case value = "upvotes"
+    }
 }

@@ -8,13 +8,11 @@
 import Foundation
 
 public struct FeatureVoterCountAPI: FeatureVoter {
-    let namespace: String
+    let baseUrl: URL
     
-    /// See `https://countapi.xyz/` for more information.
-    ///
-    /// - Parameter namespace: A unique namespace to use matching your app.
-    public init(namespace: String) {
-        self.namespace = namespace
+    /// - Parameter baseUrl: API address
+    public init(baseUrl: URL) {
+        self.baseUrl = baseUrl
     }
     
     /// Fetches the current count for the given feature.
@@ -23,10 +21,9 @@ public struct FeatureVoterCountAPI: FeatureVoter {
         guard feature.hasNotFinished else {
             return 0
         }
-        
         do {
-            let urlString = "https://api.countapi.xyz/get/\(namespace)/feature\(feature.id)"
-            let count: RoadmapFeatureVotingCount = try await JSONDataFetcher.loadJSON(fromURLString: urlString)
+            let requestUrl = baseUrl.appendingPathComponent("\(feature.id)")
+            let count: RoadmapFeatureVotingCount = try await JSONDataFetcher.get(url: requestUrl)
             return count.value ?? 0
         } catch {
             print(error)
@@ -43,8 +40,8 @@ public struct FeatureVoterCountAPI: FeatureVoter {
         }
         
         do {
-            let urlString = "https://api.countapi.xyz/hit/\(namespace)/feature\(feature.id)"
-            let count: RoadmapFeatureVotingCount = try await JSONDataFetcher.loadJSON(fromURLString: urlString)
+            let requestUrl = baseUrl.appendingPathComponent("\(feature.id)")
+            let count: RoadmapFeatureVotingCount = try await JSONDataFetcher.patch(url: requestUrl)
             feature.hasVoted = true
             print("Successfully voted, count is now: \(count)")
             return count.value
